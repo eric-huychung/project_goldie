@@ -36,5 +36,12 @@ SELECT
   min(fy)::smallint AS fy_min,
   max(fy)::smallint AS fy_max,
   sum(amount)::numeric(18, 2) AS total_amount,
-  max(imported_at) AS last_imported_at
+  max(imported_at) AS last_imported_at,
+  (
+    SELECT count(*)::int
+    FROM information_schema.columns AS cols
+    WHERE cols.table_schema = 'public'
+      AND cols.table_name = 'vendor_payments'
+      AND cols.column_name NOT IN ('id', 'source_sheet', 'imported_at')
+  ) AS column_count
 FROM vendor_payments;

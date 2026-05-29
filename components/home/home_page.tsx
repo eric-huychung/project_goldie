@@ -6,6 +6,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { LayoutGrid } from "lucide-react";
 import { GoldieLogo } from "@/components/branding/goldie_logo";
 import { HomeHero } from "@/components/home/home_hero";
@@ -13,7 +14,7 @@ import { HomeFooterBadge } from "@/components/home/home_footer_badge";
 import { TemplateGrid } from "@/components/templates/template_grid";
 import { Button } from "@/components/ui/button";
 import { get_featured_templates } from "@/lib/mock/templates";
-import { start_workbook } from "@/lib/workbook/start_workbook";
+import { push_workbook_entry } from "@/lib/workbook/push_workbook_entry";
 
 /**
  * Client home screen matching app/example.tsx HomeView.
@@ -21,21 +22,22 @@ import { start_workbook } from "@/lib/workbook/start_workbook";
 export function HomePage() {
   const [search_query, set_search_query] = useState("");
   const featured_templates = get_featured_templates(3);
+  const router = useRouter();
 
   const handle_template_select = (template_id: string) => {
-    start_workbook({ kind: "template", template_id });
+    push_workbook_entry(router, { kind: "template", template_id });
   };
 
   const handle_search_submit = (event: React.FormEvent) => {
     event.preventDefault();
     const prompt = search_query.trim();
     if (prompt) {
-      start_workbook({ kind: "prompt", prompt });
+      push_workbook_entry(router, { kind: "prompt", prompt });
     }
   };
 
   const handle_blank_workbook = () => {
-    start_workbook({ kind: "blank" });
+    push_workbook_entry(router, { kind: "blank" });
   };
 
   return (

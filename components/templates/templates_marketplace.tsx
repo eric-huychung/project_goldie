@@ -6,6 +6,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Plus, Search } from "lucide-react";
 import { GoldieLogo } from "@/components/branding/goldie_logo";
 import { CategoryPills } from "@/components/templates/category_pills";
@@ -16,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { MOCK_CATEGORIES, MOCK_TEMPLATES } from "@/lib/mock/templates";
 import { filter_templates } from "@/lib/templates/filter_templates";
 import { split_templates_by_visibility } from "@/lib/templates/split_templates";
-import { start_workbook } from "@/lib/workbook/start_workbook";
+import { push_workbook_entry } from "@/lib/workbook/push_workbook_entry";
 
 /**
  * Client marketplace screen with public/private template sections.
@@ -25,6 +26,7 @@ export function TemplatesMarketplace() {
   const [search_query, set_search_query] = useState("");
   const [active_category, set_active_category] = useState("all");
   const [create_modal_open, set_create_modal_open] = useState(false);
+  const router = useRouter();
 
   const { public_templates, private_templates } = useMemo(() => {
     const filtered = filter_templates(MOCK_TEMPLATES, search_query, active_category);
@@ -32,7 +34,7 @@ export function TemplatesMarketplace() {
   }, [search_query, active_category]);
 
   const handle_template_select = (template_id: string) => {
-    start_workbook({ kind: "template", template_id });
+    push_workbook_entry(router, { kind: "template", template_id });
   };
 
   return (
