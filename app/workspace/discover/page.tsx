@@ -1,17 +1,12 @@
 /**
- * Discover workspace route placeholder (Phase 2b).
+ * Discover workspace route — questions, insights, and visualization suggestions.
  */
 
-import { WorkspacePlaceholder } from "@/components/workspace/workspace_placeholder";
+import { DiscoverView } from "@/components/discover/discover_view";
 
 /**
- * Hypothesis dashboard — coming in Phase 2b.
+ * Discover tab: explore data and build an investigation question list.
  */
 export default function DiscoverPage() {
-  return (
-    <WorkspacePlaceholder
-      title="Discover"
-      phase_label="Phase 2b — hypothesis tracking and recommendations."
-    />
-  );
+  return <DiscoverView />;
 }

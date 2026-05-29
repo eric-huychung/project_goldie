@@ -14,7 +14,7 @@ import { HomeFooterBadge } from "@/components/home/home_footer_badge";
 import { TemplateGrid } from "@/components/templates/template_grid";
 import { Button } from "@/components/ui/button";
 import { get_featured_templates } from "@/lib/mock/templates";
-import { push_workbook_entry } from "@/lib/workbook/push_workbook_entry";
+import { push_notebook_entry } from "@/lib/notebook/push_notebook_entry";
 
 /**
  * Client home screen matching app/example.tsx HomeView.
@@ -25,19 +25,19 @@ export function HomePage() {
   const router = useRouter();
 
   const handle_template_select = (template_id: string) => {
-    push_workbook_entry(router, { kind: "template", template_id });
+    push_notebook_entry(router, { kind: "template", template_id });
   };
 
   const handle_search_submit = (event: React.FormEvent) => {
     event.preventDefault();
     const prompt = search_query.trim();
     if (prompt) {
-      push_workbook_entry(router, { kind: "prompt", prompt });
+      push_notebook_entry(router, { kind: "prompt", prompt });
     }
   };
 
-  const handle_blank_workbook = () => {
-    push_workbook_entry(router, { kind: "blank" });
+  const handle_blank_notebook = () => {
+    push_notebook_entry(router, { kind: "blank" });
   };
 
   return (
@@ -53,7 +53,7 @@ export function HomePage() {
           search_query={search_query}
           on_search_change={set_search_query}
           on_search_submit={handle_search_submit}
-          on_blank_workbook={handle_blank_workbook}
+          on_blank_notebook={handle_blank_notebook}
         />
 
         <div className="flex items-center justify-between max-w-5xl mx-auto mb-6">

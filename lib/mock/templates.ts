@@ -154,7 +154,7 @@ const PUBLIC_MOCK: template_record[] = [
 const PRIVATE_MOCK: template_record[] = [
   {
     id: "p1",
-    title: "My Vendor Payment Workbook",
+    title: "My Vendor Payment Notebook",
     description: "Custom prep flow for our 2021–23 vendor payment dataset",
     icon_key: "dollar_sign",
     color_class: "bg-amber-50 text-amber-600 border-amber-200",

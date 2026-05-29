@@ -4,7 +4,7 @@
 
 import {
   VENDOR_PAYMENTS_DATASET_NAME,
-  VENDOR_PAYMENTS_WORKBOOK_TITLE,
+  VENDOR_PAYMENTS_NOTEBOOK_TITLE,
 } from "@/lib/datasets/vendor_payments_constants";
 import { create_server_supabase_client } from "@/lib/supabase/server";
 import type { vendor_payments_status } from "@/lib/types/dataset";
@@ -29,7 +29,7 @@ function disconnected_status(error_message: string): vendor_payments_status {
   return {
     connected: false,
     name: VENDOR_PAYMENTS_DATASET_NAME,
-    workbook_title: VENDOR_PAYMENTS_WORKBOOK_TITLE,
+    notebook_title: VENDOR_PAYMENTS_NOTEBOOK_TITLE,
     row_count: null,
     column_count: null,
     fiscal_year_min: null,
@@ -62,7 +62,7 @@ export async function GET(): Promise<Response> {
     const status: vendor_payments_status = {
       connected: true,
       name: VENDOR_PAYMENTS_DATASET_NAME,
-      workbook_title: VENDOR_PAYMENTS_WORKBOOK_TITLE,
+      notebook_title: VENDOR_PAYMENTS_NOTEBOOK_TITLE,
       row_count: Number(data.row_count),
       column_count: data.column_count,
       fiscal_year_min: data.fy_min,

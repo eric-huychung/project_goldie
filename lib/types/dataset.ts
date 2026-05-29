@@ -5,7 +5,7 @@
 export type vendor_payments_status = {
   connected: boolean;
   name: string;
-  workbook_title: string;
+  notebook_title: string;
   row_count: number | null;
   column_count: number | null;
   fiscal_year_min: number | null;

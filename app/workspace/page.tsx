@@ -4,7 +4,7 @@
 
 import { redirect } from "next/navigation";
 
-import { WORKSPACE_ENTRY_PATH } from "@/lib/workbook/paths";
+import { WORKSPACE_ENTRY_PATH } from "@/lib/notebook/paths";
 
 /**
  * Sends /workspace to the Database tab.

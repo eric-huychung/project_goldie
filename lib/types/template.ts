@@ -28,7 +28,7 @@ export type template_category = {
   value: string;
 };
 
-export type workbook_start =
+export type notebook_start =
   | { kind: "template"; template_id: string }
   | { kind: "blank" }
   | { kind: "prompt"; prompt: string };

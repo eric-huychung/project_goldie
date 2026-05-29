@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { MOCK_CATEGORIES, MOCK_TEMPLATES } from "@/lib/mock/templates";
 import { filter_templates } from "@/lib/templates/filter_templates";
 import { split_templates_by_visibility } from "@/lib/templates/split_templates";
-import { push_workbook_entry } from "@/lib/workbook/push_workbook_entry";
+import { push_notebook_entry } from "@/lib/notebook/push_notebook_entry";
 
 /**
  * Client marketplace screen with public/private template sections.
@@ -34,7 +34,7 @@ export function TemplatesMarketplace() {
   }, [search_query, active_category]);
 
   const handle_template_select = (template_id: string) => {
-    push_workbook_entry(router, { kind: "template", template_id });
+    push_notebook_entry(router, { kind: "template", template_id });
   };
 
   return (

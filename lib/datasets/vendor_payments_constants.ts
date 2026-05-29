@@ -6,6 +6,6 @@
 export const VENDOR_PAYMENTS_DATASET_NAME =
   "Washington State Fiscal Data 2022–2023 Vendor Payments";
 
-/** Sidebar workbook label in the workspace Database view. */
-export const VENDOR_PAYMENTS_WORKBOOK_TITLE =
-  "Washington State Vendor Payments Workbook";
+/** Sidebar notebook label in the workspace Database view. */
+export const VENDOR_PAYMENTS_NOTEBOOK_TITLE =
+  "Washington State Vendor Payments Notebook";

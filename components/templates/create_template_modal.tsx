@@ -72,7 +72,7 @@ export function CreateTemplateModal({ open, on_close }: create_template_modal_pr
         </h2>
         <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
           Lay out charts, guided questions, and domain context here. The template builder is
-          coming soon — for now, start from a blank workbook or pick a public template.
+          coming soon — for now, start from a blank notebook or pick a public template.
         </p>
 
         <Button type="button" onClick={on_close} className="w-full">

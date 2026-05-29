@@ -11,10 +11,14 @@ import {
   Compass,
   Database,
   MessageSquare,
+  PanelRightClose,
+  PanelRightOpen,
   Sparkles,
 } from "lucide-react";
 
 import { GoldieLogo } from "@/components/branding/goldie_logo";
+import { Button } from "@/components/ui/button";
+import { use_investigation_cart } from "@/components/workspace/investigation_cart_provider";
 import { WorkspaceNavTab } from "@/components/workspace/workspace_nav_tab";
 
 const nav_items = [
@@ -55,6 +59,8 @@ const nav_items = [
  */
 export function WorkspaceHeader() {
   const pathname = usePathname();
+  const { cart_open, toggle_cart, tracked_questions } =
+    use_investigation_cart();
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-[#e5e7eb]">
@@ -80,7 +86,35 @@ export function WorkspaceHeader() {
           ))}
         </nav>
 
-        <div className="w-[120px]" aria-hidden />
+        <div className="flex items-center gap-2 w-[120px] justify-end">
+          <Button
+            variant="ghost"
+            size="icon"
+            className={
+              cart_open
+                ? "bg-amber-50 text-amber-600"
+                : "text-muted-foreground hover:text-[#1f2937]"
+            }
+            onClick={toggle_cart}
+            aria-label={
+              cart_open
+                ? "Close investigation cart"
+                : "Open investigation cart"
+            }
+            title="Investigation cart"
+          >
+            {cart_open ? (
+              <PanelRightClose className="w-4 h-4" />
+            ) : (
+              <PanelRightOpen className="w-4 h-4" />
+            )}
+          </Button>
+          {tracked_questions.length > 0 && !cart_open ? (
+            <span className="sr-only">
+              {tracked_questions.length} tracked questions
+            </span>
+          ) : null}
+        </div>
       </div>
     </header>
   );

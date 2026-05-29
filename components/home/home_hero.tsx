@@ -1,5 +1,5 @@
 /**
- * Home hero: headline, AI search bar, and blank workbook link.
+ * Home hero: headline, AI search bar, and blank notebook link.
  */
 
 import { ArrowRight, Search } from "lucide-react";
@@ -9,7 +9,7 @@ type home_hero_props = {
   search_query: string;
   on_search_change: (value: string) => void;
   on_search_submit: (event: React.FormEvent) => void;
-  on_blank_workbook: () => void;
+  on_blank_notebook: () => void;
 };
 
 /**
@@ -19,7 +19,7 @@ export function HomeHero({
   search_query,
   on_search_change,
   on_search_submit,
-  on_blank_workbook,
+  on_blank_notebook,
 }: home_hero_props) {
   return (
     <>
@@ -49,10 +49,10 @@ export function HomeHero({
       <div className="mb-16">
         <button
           type="button"
-          onClick={on_blank_workbook}
+          onClick={on_blank_notebook}
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-amber-600 hover:underline transition-colors group"
         >
-          or start with a blank workbook
+          or start with a blank notebook
           <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>

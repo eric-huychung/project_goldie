@@ -12,15 +12,18 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   VENDOR_PAYMENTS_DATASET_NAME,
-  VENDOR_PAYMENTS_WORKBOOK_TITLE,
+  VENDOR_PAYMENTS_NOTEBOOK_TITLE,
 } from "@/lib/datasets/vendor_payments_constants";
+import {
+  clear_vendor_payments_status_cache,
+  disconnected_vendor_payments_status,
+  fetch_vendor_payments_status,
+  read_vendor_payments_status_cache,
+} from "@/lib/datasets/vendor_payments_status_cache";
 import type {
   dataset_connection_state,
   vendor_payments_status,
 } from "@/lib/types/dataset";
-
-const STATUS_API_PATH = "/api/datasets/vendor-payments/status";
-const STATUS_CACHE_KEY = "vendor_payments_status_v1";
 
 type sidebar_tab = "sample" | "upload" | "cloud";
 
@@ -34,56 +37,32 @@ export function DatabaseView() {
   const [status, set_status] = useState<vendor_payments_status | null>(null);
 
   useEffect(() => {
-    const cached = localStorage.getItem(STATUS_CACHE_KEY);
+    const cached = read_vendor_payments_status_cache();
     if (!cached) {
       return;
     }
 
-    try {
-      const parsed = JSON.parse(cached) as vendor_payments_status;
-      set_status(parsed);
-      set_connection_state(parsed.connected ? "connected" : "error");
-    } catch {
-      localStorage.removeItem(STATUS_CACHE_KEY);
-    }
-  }, []);
-
-  const cache_status = useCallback((next_status: vendor_payments_status) => {
-    localStorage.setItem(STATUS_CACHE_KEY, JSON.stringify(next_status));
+    set_status(cached);
+    set_connection_state(cached.connected ? "connected" : "error");
   }, []);
 
   const fetch_status = useCallback(async () => {
     set_connection_state("loading");
 
     try {
-      const response = await fetch(STATUS_API_PATH);
-      const body = (await response.json()) as vendor_payments_status;
-
+      const body = await fetch_vendor_payments_status();
       set_status(body);
-      cache_status(body);
-
-      if (body.connected) {
-        set_connection_state("connected");
-      } else {
-        set_connection_state("error");
-      }
+      set_connection_state(body.connected ? "connected" : "error");
     } catch {
       set_connection_state("error");
-      set_status({
-        connected: false,
-        name: VENDOR_PAYMENTS_DATASET_NAME,
-        workbook_title: VENDOR_PAYMENTS_WORKBOOK_TITLE,
-        row_count: null,
-        column_count: null,
-        fiscal_year_min: null,
-        fiscal_year_max: null,
-        total_amount: null,
-        last_synced_at: null,
-        error_message: "Could not reach the status API",
-      });
-      localStorage.removeItem(STATUS_CACHE_KEY);
+      set_status(
+        disconnected_vendor_payments_status(
+          "Could not reach the status API",
+        ),
+      );
+      clear_vendor_payments_status_cache();
     }
-  }, [cache_status]);
+  }, []);
 
   const sidebar_items = [
     {
@@ -116,9 +95,9 @@ export function DatabaseView() {
     <div className="flex h-full">
       <aside className="w-64 bg-white border-r border-[#e5e7eb] p-4 shrink-0">
         <div className="mb-6 p-3 bg-[#f8f9fa] rounded-lg">
-          <p className="text-xs text-muted-foreground mb-1">Current Workbook</p>
+          <p className="text-xs text-muted-foreground mb-1">Current notebook</p>
           <p className="text-sm font-medium text-[#1f2937] leading-snug">
-            {VENDOR_PAYMENTS_WORKBOOK_TITLE}
+            {VENDOR_PAYMENTS_NOTEBOOK_TITLE}
           </p>
         </div>
 
@@ -155,7 +134,7 @@ export function DatabaseView() {
         <div className="max-w-4xl">
           {active_tab === "sample" && (
             <ConnectedDatasetCard
-              dataset_name={VENDOR_PAYMENTS_DATASET_NAME}
+              dataset_name={status?.name ?? VENDOR_PAYMENTS_DATASET_NAME}
               connection_state={connection_state}
               status={status}
               on_connect={fetch_status}
