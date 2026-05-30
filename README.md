@@ -1,42 +1,40 @@
-# project_goldie
+# GOLDIE
 
-Canvas for data. Built with [Next.js](https://nextjs.org) (App Router), deployed on [Vercel](https://vercel.com).
+Canvas for data — a Next.js POC inspired by Golden Analytics. Users pick a template, connect a sample dataset, explore questions, and chat with curated context.
 
----
+Stack: **Next.js** (App Router) · **Supabase** · **Vercel AI Gateway** · deployed on **Vercel**.
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
+## Quick start
 
 ```bash
+cp .env.example .env.local   # fill in Supabase + AI Gateway keys
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Optional — load the sample dataset locally:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run db:schema
+npm run import:vendor-payments
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+See [`.env.example`](.env.example) for required variables. Never commit `.env` files.
 
-## Learn More
+## Modules
 
-To learn more about Next.js, take a look at the following resources:
+| Area | Route(s) | Doc |
+|------|----------|-----|
+| **Templates** — home, marketplace, start a notebook | `/`, `/templates` | [docs/template_module.md](docs/template_module.md) |
+| **Database** — connect Washington vendor payments sample | `/workspace/database` | [docs/sample_data_reference.md](docs/sample_data_reference.md) |
+| **Discover** — insights, questions, investigation cart | `/workspace/discover` | [docs/discover_module.md](docs/discover_module.md) |
+| **Communicate** — chat + theme-linked dashboard charts | `/workspace/communicate` | [docs/dashboard_module.md](docs/dashboard_module.md) |
+| **Audit** — append-only LLM input log | (backend) | [docs/audit_module.md](docs/audit_module.md) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Data layer** (schema, ETL, curated analysis, APIs) is documented in [docs/sample_data_reference.md](docs/sample_data_reference.md).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Typical flow: **Templates** → **Database** → **Discover** (track themes) → **Communicate** (chat + charts).
 
-## Deploy on Vercel
+## POC notes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Most UI content is mocked or curated in TypeScript — not live SQL or a real template API. Cart and collaboration state are not persisted. Details and shortcuts per module are in the docs above.
