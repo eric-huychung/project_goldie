@@ -76,8 +76,5 @@ export type discover_quick_insight = {
 export type discover_suggested_visualization = {
   id: string;
   title: string;
-  question: string;
-  chart_type: "line" | "bar";
-  x_axis: string;
-  y_axis: string;
+  chart_type: "vertical_bar" | "horizontal_bar" | "pie";
 };

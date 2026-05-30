@@ -1,5 +1,5 @@
 /**
- * Suggested visualizations grid — chart ideas tied to example questions (mock).
+ * Suggested visualizations grid — chart type ideas (mock).
  */
 
 "use client";
@@ -43,36 +43,43 @@ function MiniChartPreview({
 }: {
   chart_type: discover_suggested_visualization["chart_type"];
 }) {
-  return (
-    <div className="h-24 bg-[#f8f9fa] rounded-lg mb-3 flex items-end justify-center gap-1 p-3">
-      {chart_type === "line" ? (
-        <svg className="w-full h-full" viewBox="0 0 100 50">
-          <path
-            d="M 0 40 L 20 35 L 40 25 L 60 30 L 80 15 L 100 20"
-            fill="none"
-            stroke="#0369a1"
-            strokeWidth="2"
-          />
-          {[0, 20, 40, 60, 80, 100].map((x, i) => {
-            const ys = [40, 35, 25, 30, 15, 20];
-            return <circle key={x} cx={x} cy={ys[i]} r="2" fill="#0369a1" />;
-          })}
+  if (chart_type === "pie") {
+    return (
+      <div className="h-24 bg-[#f8f9fa] rounded-lg mb-3 flex items-center justify-center p-3">
+        <svg className="w-16 h-16" viewBox="0 0 100 100">
+          <path d="M 50 50 L 50 8 A 42 42 0 0 1 92 50 Z" fill="#0369a1" />
+          <path d="M 50 50 L 92 50 A 42 42 0 0 1 50 92 Z" fill="#0ea5e9" />
+          <path d="M 50 50 L 50 92 A 42 42 0 0 1 8 50 Z" fill="#38bdf8" />
+          <path d="M 50 50 L 8 50 A 42 42 0 0 1 50 8 Z" fill="#94a3b8" />
         </svg>
-      ) : (
-        <>
-          <div className="w-4 bg-blue-400 rounded-t" style={{ height: "60%" }} />
-          <div className="w-4 bg-blue-400 rounded-t" style={{ height: "80%" }} />
-          <div className="w-4 bg-blue-400 rounded-t" style={{ height: "45%" }} />
-          <div className="w-4 bg-blue-400 rounded-t" style={{ height: "70%" }} />
-          <div className="w-4 bg-blue-400 rounded-t" style={{ height: "55%" }} />
-        </>
-      )}
+      </div>
+    );
+  }
+
+  if (chart_type === "horizontal_bar") {
+    return (
+      <div className="h-24 bg-[#f8f9fa] rounded-lg mb-3 flex flex-col justify-center gap-2 p-4">
+        <div className="h-2.5 bg-blue-400 rounded-r" style={{ width: "85%" }} />
+        <div className="h-2.5 bg-blue-400 rounded-r" style={{ width: "65%" }} />
+        <div className="h-2.5 bg-blue-400 rounded-r" style={{ width: "45%" }} />
+        <div className="h-2.5 bg-blue-400 rounded-r" style={{ width: "30%" }} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-24 bg-[#f8f9fa] rounded-lg mb-3 flex items-end justify-center gap-1.5 p-3">
+      <div className="w-4 bg-blue-400 rounded-t" style={{ height: "60%" }} />
+      <div className="w-4 bg-blue-400 rounded-t" style={{ height: "80%" }} />
+      <div className="w-4 bg-blue-400 rounded-t" style={{ height: "45%" }} />
+      <div className="w-4 bg-blue-400 rounded-t" style={{ height: "70%" }} />
+      <div className="w-4 bg-blue-400 rounded-t" style={{ height: "55%" }} />
     </div>
   );
 }
 
 /**
- * Selectable visualization suggestions (dashboard CTA is UI-only for MVP).
+ * Selectable visualization type suggestions (dashboard CTA is UI-only for MVP).
  */
 export function SuggestedVisualizationsSection() {
   const [selected_ids, set_selected_ids] = useState<string[]>([]);
@@ -116,8 +123,8 @@ export function SuggestedVisualizationsSection() {
         </button>
       </div>
       <p className="text-sm text-muted-foreground mb-6">
-        Chart ideas based on your data structure. Link these to tracked questions
-        in a later iteration.
+        Common chart types for your investigation. Pick types to include on a
+        dashboard.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -137,35 +144,13 @@ export function SuggestedVisualizationsSection() {
             >
               <CardContent className="p-4">
                 <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4 text-blue-500" />
-                    <span className="font-medium text-sm text-[#1f2937]">
-                      {viz.title}
-                    </span>
-                  </div>
+                  <span className="font-medium text-sm text-[#1f2937]">
+                    {viz.title}
+                  </span>
                   <VizCheckbox checked={is_selected} />
                 </div>
 
                 <MiniChartPreview chart_type={viz.chart_type} />
-
-                <p className="text-xs text-muted-foreground mb-3">
-                  {viz.question}
-                </p>
-
-                <div className="flex items-center gap-4 text-xs flex-wrap">
-                  <div>
-                    <span className="text-muted-foreground">X-Axis: </span>
-                    <Badge variant="secondary" className="text-xs">
-                      {viz.x_axis}
-                    </Badge>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Y-Axis: </span>
-                    <Badge variant="secondary" className="text-xs">
-                      {viz.y_axis}
-                    </Badge>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           );

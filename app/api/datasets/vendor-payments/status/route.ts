@@ -19,13 +19,16 @@ type summary_row = {
   column_count: number;
 };
 
+/** User-safe message when the dataset cannot be reached. */
+const DATASET_UNAVAILABLE_MESSAGE =
+  "Could not connect to the dataset. Check your connection and try again.";
+
 /**
- * Builds a disconnected status payload with an optional error message.
+ * Builds a disconnected status payload for the client.
  *
- * @param error_message - Reason the database could not be reached
- * @returns Status JSON shape
+ * @returns Status JSON shape with a generic error message only
  */
-function disconnected_status(error_message: string): vendor_payments_status {
+function disconnected_status(): vendor_payments_status {
   return {
     connected: false,
     name: VENDOR_PAYMENTS_DATASET_NAME,
@@ -36,7 +39,7 @@ function disconnected_status(error_message: string): vendor_payments_status {
     fiscal_year_max: null,
     total_amount: null,
     last_synced_at: null,
-    error_message,
+    error_message: DATASET_UNAVAILABLE_MESSAGE,
   };
 }
 
@@ -55,8 +58,11 @@ export async function GET(): Promise<Response> {
       .single<summary_row>();
 
     if (error || !data) {
-      const message = error?.message ?? "No summary data returned";
-      return Response.json(disconnected_status(message), { status: 503 });
+      console.error(
+        "vendor-payments status:",
+        error?.message ?? "No summary data returned",
+      );
+      return Response.json(disconnected_status(), { status: 503 });
     }
 
     const status: vendor_payments_status = {
@@ -73,9 +79,11 @@ export async function GET(): Promise<Response> {
 
     return Response.json(status);
   } catch (error: unknown) {
-    const message =
-      error instanceof Error ? error.message : "Database connection failed";
+    console.error(
+      "vendor-payments status:",
+      error instanceof Error ? error.message : "Database connection failed",
+    );
 
-    return Response.json(disconnected_status(message), { status: 503 });
+    return Response.json(disconnected_status(), { status: 503 });
   }
 }
