@@ -1,17 +1,12 @@
 /**
- * Communicate workspace route placeholder (Phase 4).
+ * Communicate workspace route — Data Storyteller chat (Phase 4a).
  */
 
-import { WorkspacePlaceholder } from "@/components/workspace/workspace_placeholder";
+import { CommunicateView } from "@/components/communicate/communicate_view";
 
 /**
- * Communicate tab — coming in Phase 4.
+ * Communicate tab with chat agent and dashboard placeholder.
  */
 export default function CommunicatePage() {
-  return (
-    <WorkspacePlaceholder
-      title="Communicate"
-      phase_label="Phase 4 — agent panel, charts, and story suggestions."
-    />
-  );
+  return <CommunicateView />;
 }
