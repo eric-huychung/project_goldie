@@ -4,6 +4,7 @@
 
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -13,12 +14,14 @@ import {
   MessageSquare,
   PanelRightClose,
   PanelRightOpen,
+  Share2,
   Sparkles,
 } from "lucide-react";
 
 import { GoldieLogo } from "@/components/branding/goldie_logo";
 import { Button } from "@/components/ui/button";
 import { use_investigation_cart } from "@/components/workspace/investigation_cart_provider";
+import { ShareModal } from "@/components/workspace/share_modal";
 import { WorkspaceNavTab } from "@/components/workspace/workspace_nav_tab";
 
 const nav_items = [
@@ -59,63 +62,78 @@ const nav_items = [
  */
 export function WorkspaceHeader() {
   const pathname = usePathname();
+  const [share_open, set_share_open] = useState(false);
   const { cart_open, toggle_cart, tracked_questions } =
     use_investigation_cart();
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-[#e5e7eb]">
-      <div className="flex items-center justify-between px-4 h-14">
-        <Link
-          href="/"
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-          aria-label="Back to home"
-        >
-          <GoldieLogo size="compact" />
-        </Link>
-
-        <nav className="flex items-center gap-1">
-          {nav_items.map((item) => (
-            <WorkspaceNavTab
-              key={item.href}
-              href={item.href}
-              icon={item.icon}
-              label={item.label}
-              is_active={pathname === item.href}
-              active_class_name={item.active_class_name}
-            />
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2 w-[120px] justify-end">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={
-              cart_open
-                ? "bg-amber-50 text-amber-600"
-                : "text-muted-foreground hover:text-[#1f2937]"
-            }
-            onClick={toggle_cart}
-            aria-label={
-              cart_open
-                ? "Close investigation cart"
-                : "Open investigation cart"
-            }
-            title="Investigation cart"
+    <>
+      <header className="sticky top-0 z-50 bg-white border-b border-[#e5e7eb]">
+        <div className="flex items-center justify-between px-4 h-14">
+          <Link
+            href="/"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            aria-label="Back to home"
           >
-            {cart_open ? (
-              <PanelRightClose className="w-4 h-4" />
-            ) : (
-              <PanelRightOpen className="w-4 h-4" />
-            )}
-          </Button>
-          {tracked_questions.length > 0 && !cart_open ? (
-            <span className="sr-only">
-              {tracked_questions.length} tracked questions
-            </span>
-          ) : null}
+            <GoldieLogo size="compact" />
+          </Link>
+
+          <nav className="flex items-center gap-1">
+            {nav_items.map((item) => (
+              <WorkspaceNavTab
+                key={item.href}
+                href={item.href}
+                icon={item.icon}
+                label={item.label}
+                is_active={pathname === item.href}
+                active_class_name={item.active_class_name}
+              />
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2 justify-end">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:text-[#1f2937]"
+              onClick={() => set_share_open(true)}
+              aria-label="Share dashboard"
+              title="Share dashboard"
+            >
+              <Share2 className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={
+                cart_open
+                  ? "bg-amber-50 text-amber-600"
+                  : "text-muted-foreground hover:text-[#1f2937]"
+              }
+              onClick={toggle_cart}
+              aria-label={
+                cart_open
+                  ? "Close investigation cart"
+                  : "Open investigation cart"
+              }
+              title="Investigation cart"
+            >
+              {cart_open ? (
+                <PanelRightClose className="w-4 h-4" />
+              ) : (
+                <PanelRightOpen className="w-4 h-4" />
+              )}
+            </Button>
+            {tracked_questions.length > 0 && !cart_open ? (
+              <span className="sr-only">
+                {tracked_questions.length} tracked questions
+              </span>
+            ) : null}
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      <ShareModal open={share_open} on_close={() => set_share_open(false)} />
+    </>
   );
 }

@@ -7,6 +7,8 @@
 import { useMemo, useState } from "react";
 
 import { DashboardChartBlock } from "@/components/communicate/dashboard_chart_block";
+import { DashboardCommentPins } from "@/components/communicate/dashboard_comment_pins";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { use_investigation_cart } from "@/components/workspace/investigation_cart_provider";
@@ -18,6 +20,7 @@ import {
 import {
   INVESTIGATION_THEME_COLOR_STYLES,
 } from "@/lib/discover/investigation_theme_colors";
+import { get_comment_pins_for_chart } from "@/lib/mock/dashboard_collaboration_preview";
 import type { dashboard_chart_data_bundle } from "@/lib/types/dashboard";
 import type { investigation_theme } from "@/lib/types/discover";
 import { cn } from "@/lib/utils";
@@ -62,21 +65,32 @@ export function DashboardCanvas({ chart_data }: dashboard_canvas_props) {
       : theme_copy.title;
   const charts = get_dashboard_charts_for_theme(active_tab.id, chart_data);
   const color_style = INVESTIGATION_THEME_COLOR_STYLES[active_tab.color_key];
+  const story_pins = get_comment_pins_for_chart("theme-story");
 
   return (
     <div className="flex-1 p-6 overflow-auto">
       <Card className="bg-white border-[#e5e7eb] shadow-sm">
         <CardContent className="p-8">
+          <div className="flex items-center gap-2 mb-6">
+            <Badge
+              variant="secondary"
+              className="bg-[#ffedd5] text-[#9a3412] border-[#fed7aa] font-normal"
+            >
+              Collaboration preview — fictional sample comments, not stored or shared
+            </Badge>
+          </div>
+
           <div
             className={cn(
-              "mb-8 pl-4 border-l-4",
+              "relative mb-8 pl-4 border-l-4",
               color_style.border_class,
             )}
           >
             <h1 className="text-2xl font-semibold text-[#1f2937] mb-2">
               {dashboard_title}
             </h1>
-            <p className="text-muted-foreground">{theme_copy.story}</p>
+            <p className="text-muted-foreground pr-8">{theme_copy.story}</p>
+            <DashboardCommentPins pins={story_pins} />
           </div>
 
           {charts.length > 0 ? (

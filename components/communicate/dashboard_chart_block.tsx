@@ -2,11 +2,13 @@
  * Single chart block on the Communicate dashboard canvas.
  */
 
+import { DashboardCommentPins } from "@/components/communicate/dashboard_comment_pins";
 import {
   SvgFyBarChart,
   SvgHorizontalBarChart,
   SvgPieChart,
 } from "@/components/communicate/dashboard_svg_charts";
+import { get_comment_pins_for_chart } from "@/lib/mock/dashboard_collaboration_preview";
 import type {
   dashboard_fy_spend,
   dashboard_named_total,
@@ -27,6 +29,8 @@ export function DashboardChartBlock({
   chart_number,
   chart_total,
 }: dashboard_chart_block_props) {
+  const comment_pins = get_comment_pins_for_chart(chart.id);
+
   return (
     <article
       className="border border-[#e5e7eb] rounded-xl p-6"
@@ -45,17 +49,21 @@ export function DashboardChartBlock({
         <p className="text-sm text-muted-foreground mt-1">{chart.subtitle}</p>
       </div>
 
-      {chart.kind === "pie" ? (
-        <SvgPieChart rows={chart.rows as dashboard_named_total[]} />
-      ) : null}
+      <div className="relative">
+        {chart.kind === "pie" ? (
+          <SvgPieChart rows={chart.rows as dashboard_named_total[]} />
+        ) : null}
 
-      {chart.kind === "bar" ? (
-        <SvgHorizontalBarChart rows={chart.rows as dashboard_named_total[]} />
-      ) : null}
+        {chart.kind === "bar" ? (
+          <SvgHorizontalBarChart rows={chart.rows as dashboard_named_total[]} />
+        ) : null}
 
-      {chart.kind === "fy_bar" ? (
-        <SvgFyBarChart rows={chart.rows as dashboard_fy_spend[]} />
-      ) : null}
+        {chart.kind === "fy_bar" ? (
+          <SvgFyBarChart rows={chart.rows as dashboard_fy_spend[]} />
+        ) : null}
+
+        <DashboardCommentPins pins={comment_pins} />
+      </div>
 
       <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-[#f3f4f6]">
         Source: Washington State Vendor Payments FY 2022–2023
