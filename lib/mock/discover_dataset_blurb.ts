@@ -1,6 +1,6 @@
 /**
- * Static dataset description copy for Discover (schema-aware text can replace this later).
+ * Static dataset description copy for Discover.
  */
 
 export const VENDOR_PAYMENTS_DISCOVER_BLURB =
-  "This vendor payments dataset tracks individual payment transactions to vendors, including payment dates, amounts, agency allocations, and vendor identifiers across fiscal years.";
+  "Washington State vendor payment lines from FY 2022–2023. Each row is one payment with agency, category, vendor, amount, and fiscal month.";

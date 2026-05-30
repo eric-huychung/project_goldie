@@ -16,6 +16,9 @@ import {
 import { pick_theme_color_key } from "@/lib/discover/investigation_theme_colors";
 import { UNCATEGORIZED_THEME_ID } from "@/lib/discover/uncategorized_theme";
 import type {
+  add_story_options,
+  investigation_cart_panel,
+  investigation_story,
   investigation_theme,
   investigation_theme_color_key,
   track_question_options,
@@ -50,6 +53,20 @@ type investigation_cart_context_value = {
   uncategorized_color_key: investigation_theme_color_key;
   show_uncategorized_group: boolean;
   delete_theme_group: (theme_id: string) => void;
+  tracked_stories: investigation_story[];
+  cart_panel: investigation_cart_panel;
+  set_cart_panel: (panel: investigation_cart_panel) => void;
+  is_story_added: (id: string) => boolean;
+  add_story: (
+    id: string,
+    title: string,
+    body: string,
+    options?: add_story_options,
+  ) => void;
+  add_custom_story: (title: string, body?: string) => void;
+  remove_story: (id: string) => void;
+  update_story_title: (id: string, title: string) => void;
+  update_story_body: (id: string, body: string) => void;
 };
 
 const InvestigationCartContext =
@@ -72,6 +89,11 @@ export function InvestigationCartProvider({
   const [tracked_questions, set_tracked_questions] = useState<
     tracked_question[]
   >([]);
+  const [tracked_stories, set_tracked_stories] = useState<investigation_story[]>(
+    [],
+  );
+  const [cart_panel, set_cart_panel] =
+    useState<investigation_cart_panel>("themes");
 
   const ensure_theme = useCallback(
     (theme_id: string, theme_name: string) => {
@@ -235,6 +257,91 @@ export function InvestigationCartProvider({
     set_tracked_questions((prev) =>
       prev.filter((q) => q.theme_id !== theme_id),
     );
+    set_tracked_stories((prev) =>
+      prev.filter((story) => story.theme_id !== theme_id),
+    );
+  }, []);
+
+  const is_story_added = useCallback(
+    (id: string) => tracked_stories.some((story) => story.id === id),
+    [tracked_stories],
+  );
+
+  const add_story = useCallback(
+    (
+      id: string,
+      title: string,
+      body: string,
+      options?: add_story_options,
+    ) => {
+      const trimmed_title = title.trim();
+      const trimmed_body = body.trim();
+      if (!trimmed_title || !trimmed_body) {
+        return;
+      }
+
+      const theme_id = options?.theme_id ?? null;
+      if (theme_id && options?.theme_name) {
+        ensure_theme(theme_id, options.theme_name);
+      }
+
+      set_tracked_stories((prev) => {
+        if (prev.some((story) => story.id === id)) {
+          return prev;
+        }
+
+        return [
+          ...prev,
+          {
+            id,
+            title: trimmed_title,
+            body: trimmed_body,
+            theme_id,
+          },
+        ];
+      });
+      set_cart_panel("stories");
+      set_cart_open(true);
+    },
+    [ensure_theme],
+  );
+
+  const add_custom_story = useCallback((title: string, body = "") => {
+    const trimmed_title = title.trim();
+    if (!trimmed_title) {
+      return;
+    }
+
+    const id = `custom-story-${Date.now()}`;
+    set_tracked_stories((prev) => [
+      ...prev,
+      {
+        id,
+        title: trimmed_title,
+        body: body.trim(),
+        theme_id: null,
+      },
+    ]);
+    set_cart_panel("stories");
+    set_cart_open(true);
+  }, []);
+
+  const remove_story = useCallback((id: string) => {
+    set_tracked_stories((prev) => prev.filter((story) => story.id !== id));
+  }, []);
+
+  const update_story_title = useCallback((id: string, title: string) => {
+    set_tracked_stories((prev) =>
+      prev.map((story) =>
+        story.id === id ? { ...story, title } : story,
+      ),
+    );
+  }, []);
+
+  const update_story_body = useCallback((id: string, body: string) => {
+    set_tracked_stories((prev) =>
+      prev.map((story) => (story.id === id ? { ...story, body } : story)),
+    );
   }, []);
 
   const remove_theme = useCallback(
@@ -269,6 +376,15 @@ export function InvestigationCartProvider({
       uncategorized_color_key,
       show_uncategorized_group,
       delete_theme_group,
+      tracked_stories,
+      cart_panel,
+      set_cart_panel,
+      is_story_added,
+      add_story,
+      add_custom_story,
+      remove_story,
+      update_story_title,
+      update_story_body,
     }),
     [
       cart_open,
@@ -276,6 +392,8 @@ export function InvestigationCartProvider({
       uncategorized_color_key,
       show_uncategorized_group,
       tracked_questions,
+      tracked_stories,
+      cart_panel,
       is_question_tracked,
       track_question,
       untrack_question,
@@ -288,6 +406,12 @@ export function InvestigationCartProvider({
       remove_theme,
       update_theme_color,
       delete_theme_group,
+      is_story_added,
+      add_story,
+      add_custom_story,
+      remove_story,
+      update_story_title,
+      update_story_body,
       toggle_cart,
     ],
   );

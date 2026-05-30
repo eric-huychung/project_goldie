@@ -1,16 +1,14 @@
 /**
- * On-demand suggest / refine actions for question drafting (stub until LLM is wired).
+ * On-demand suggest / refine actions for question drafting on Discover.
  */
 
 "use client";
 
+import { useState } from "react";
 import { Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  stub_refine_question,
-  stub_suggest_question,
-} from "@/lib/discover/question_assist_stub";
+import { QUESTION_ASSIST_UNAVAILABLE_MESSAGE } from "@/lib/discover/question_assist_messages";
 
 type question_assist_actions_props = {
   draft: string;
@@ -28,46 +26,79 @@ export function QuestionAssistActions({
   on_track,
   show_track = false,
 }: question_assist_actions_props) {
-  const handle_suggest = () => {
-    on_draft_change(stub_suggest_question());
-  };
+  const [is_loading, set_is_loading] = useState(false);
+  const [error_message, set_error_message] = useState<string | null>(null);
 
-  const handle_refine = () => {
-    on_draft_change(stub_refine_question(draft));
+  const run_assist = async (action: "suggest" | "refine") => {
+    set_is_loading(true);
+    set_error_message(null);
+
+    try {
+      const response = await fetch("/api/discover/question-assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action,
+          draft: action === "refine" ? draft : undefined,
+        }),
+      });
+
+      const payload = (await response.json()) as {
+        text?: string;
+        error?: string;
+      };
+
+      if (!response.ok || !payload.text) {
+        set_error_message(
+          payload.error ?? QUESTION_ASSIST_UNAVAILABLE_MESSAGE,
+        );
+        return;
+      }
+
+      on_draft_change(payload.text);
+    } catch {
+      set_error_message(QUESTION_ASSIST_UNAVAILABLE_MESSAGE);
+    } finally {
+      set_is_loading(false);
+    }
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <Button
-        type="button"
-        variant="secondary"
-        className="h-9 gap-1.5 text-xs"
-        onClick={handle_suggest}
-        title="Suggest a question (stub)"
-      >
-        <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-        Suggest one
-      </Button>
-      <Button
-        type="button"
-        variant="secondary"
-        className="h-9 gap-1.5 text-xs"
-        onClick={handle_refine}
-        disabled={!draft.trim()}
-        title="Refine wording (stub)"
-      >
-        <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-        Refine wording
-      </Button>
-      {show_track && on_track ? (
+    <div className="space-y-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Button
           type="button"
-          className="h-9 bg-[#0369a1] hover:bg-[#0c4a6e] text-white text-xs"
-          onClick={on_track}
-          disabled={!draft.trim()}
+          variant="secondary"
+          className="h-9 gap-1.5 text-xs"
+          onClick={() => run_assist("suggest")}
+          disabled={is_loading}
         >
-          Track question
+          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+          {is_loading ? "Thinking…" : "Suggest one"}
         </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          className="h-9 gap-1.5 text-xs"
+          onClick={() => run_assist("refine")}
+          disabled={is_loading || !draft.trim()}
+        >
+          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+          Refine wording
+        </Button>
+        {show_track && on_track ? (
+          <Button
+            type="button"
+            className="h-9 bg-[#0369a1] hover:bg-[#0c4a6e] text-white text-xs"
+            onClick={on_track}
+            disabled={!draft.trim() || is_loading}
+          >
+            Track question
+          </Button>
+        ) : null}
+      </div>
+      {error_message ? (
+        <p className="text-xs text-red-600">{error_message}</p>
       ) : null}
     </div>
   );

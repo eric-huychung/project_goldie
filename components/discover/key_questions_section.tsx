@@ -46,7 +46,7 @@ export function KeyQuestionsSection() {
         wording after you track a question in the investigation cart.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="max-w-xl">
         {MOCK_KEY_QUESTION_THEMES.map((theme) => {
           const any_tracked = theme.questions.some((q) =>
             is_question_tracked(q.id),

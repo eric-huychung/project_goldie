@@ -27,10 +27,33 @@ export type tracked_question = {
   theme_id: string | null;
 };
 
+export type investigation_story = {
+  id: string;
+  title: string;
+  body: string;
+  /** Optional link to an investigation theme */
+  theme_id: string | null;
+};
+
+export type story_suggestion = {
+  id: string;
+  title: string;
+  body: string;
+  theme_id?: string | null;
+  theme_name?: string;
+};
+
 export type track_question_options = {
   theme_id?: string | null;
   theme_name?: string;
 };
+
+export type add_story_options = {
+  theme_id?: string | null;
+  theme_name?: string;
+};
+
+export type investigation_cart_panel = "themes" | "stories";
 
 export type discover_question_item = {
   id: string;

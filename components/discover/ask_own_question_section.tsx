@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { use_investigation_cart } from "@/components/workspace/investigation_cart_provider";
 
 /**
- * Free-form question entry with stub suggest/refine (LLM hookup later).
+ * Free-form question entry with LLM suggest / refine assist.
  */
 export function AskOwnQuestionSection() {
   const { track_question } = use_investigation_cart();

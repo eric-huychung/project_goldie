@@ -6,7 +6,7 @@ import { VENDOR_PAYMENTS_DISCOVER_BLURB } from "@/lib/mock/discover_dataset_blur
 
 export const VENDOR_PAYMENTS_TABLE_NAME = "vendor_payments";
 
-/** Data columns exposed to the chat agent (matches mock_data.md). */
+/** Data columns exposed to the chat agent (see docs/sample_data_reference.md). */
 export const VENDOR_PAYMENTS_COLUMNS: {
   name: string;
   type: string;

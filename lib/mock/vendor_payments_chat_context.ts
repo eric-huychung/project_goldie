@@ -1,22 +1,25 @@
 /**
  * Curated vendor payments insights and FAQs for the Communicate chat system prompt.
- * Update after light analysis — static copy, not queried per message.
+ * Derived from lib/datasets/vendor_payments_analysis.ts — see docs/sample_data_reference.md.
  */
 
-export type vendor_payments_faq_item = {
-  question: string;
-  answer: string;
-};
+import {
+  VENDOR_PAYMENTS_CHAT_FAQS,
+  VENDOR_PAYMENTS_CHAT_QUICK_INSIGHTS,
+  type vendor_payments_faq_item,
+} from "@/lib/datasets/vendor_payments_analysis";
+
+export type { vendor_payments_faq_item };
 
 export type vendor_payments_chat_context = {
   quick_insights: string[];
   frequently_asked: vendor_payments_faq_item[];
 };
 
-/** Edit this object when you refresh analysis of the sample dataset. */
+/** Populated from curated SQL analysis (see docs/sample_data_reference.md). */
 export const VENDOR_PAYMENTS_CHAT_CONTEXT: vendor_payments_chat_context = {
-  quick_insights: [],
-  frequently_asked: [],
+  quick_insights: VENDOR_PAYMENTS_CHAT_QUICK_INSIGHTS,
+  frequently_asked: VENDOR_PAYMENTS_CHAT_FAQS,
 };
 
 /**

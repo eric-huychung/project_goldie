@@ -24,8 +24,8 @@ export function DiscoverView() {
         <DiscoverHeader on_refresh={refresh} is_refreshing={is_refreshing} />
         <DatasetSummaryCard status={status} is_loading={is_refreshing} />
         <QuickInsightsSection />
-        <AskOwnQuestionSection />
         <KeyQuestionsSection />
+        <AskOwnQuestionSection />
         <SuggestedVisualizationsSection />
       </div>
     </div>

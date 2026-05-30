@@ -7,8 +7,9 @@ import type { template_category, template_record } from "@/lib/types/template";
 const PUBLIC_MOCK: template_record[] = [
   {
     id: "1",
-    title: "Government Fiscal Audit",
-    description: "Analyze public sector spending patterns and budget allocation",
+    title: "Washington State Spending Analysis",
+    description:
+      "Vendor payments by agency, category, and fiscal year",
     icon_key: "building2",
     color_class: "bg-blue-50 text-blue-600 border-blue-200",
     category: "Government",
