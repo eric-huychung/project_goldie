@@ -10,14 +10,14 @@ Reviewers need to see what was sent to models without digging through server log
 
 - No admin UI — inspect rows in Supabase Table Editor
 - No retention policy
-- Discover question-assist not logged yet (not LLM-backed)
+- Discover question-assist is logged on request/response
 - Failed inserts are swallowed so chat keeps working
 
 ## Database
 
 **Table:** `public.ai_input_log` · **DDL:** `scripts/schema_audit.sql` (via `npm run db:schema`)
 
-Typical chat turn: `model_request` → optional `tool_call`/`tool_result` → `model_response` (with token counts).
+Typical chat turn: `model_request` → `model_response` (with token counts).
 
 ## Code
 

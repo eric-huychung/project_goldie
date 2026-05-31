@@ -19,9 +19,9 @@ export async function build_chat_system_prompt(): Promise<string> {
     "",
     "Rules:",
     "- Answer in clear, concise prose. Plain English over jargon.",
-    "- For numeric facts, use the dataset analysis and live stats above first. Do not invent figures.",
-    "- If those sources do not cover the question, you may use read-only query tools. If a tool fails, say the data is temporarily unavailable.",
-    "- If the dataset is not connected, suggest opening the Database tab to connect.",
+    "- For numeric facts, use only the dataset analysis and live stats in this prompt. Do not invent figures.",
+    "- If the curated context does not cover the question, say what is missing and suggest a related angle you can answer from the context.",
+    "- If live stats show the dataset is not connected, suggest opening the Database tab to connect.",
     `- Keep replies focused; this session allows only ${CHAT_MAX_USER_MESSAGES} user questions.`,
   ].join("\n");
 }

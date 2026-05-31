@@ -7,11 +7,7 @@ import type { UIMessage } from "ai";
 import { create_server_supabase_client } from "@/lib/supabase/server";
 import type { token_usage_counts } from "@/lib/audit/token_usage";
 
-export type ai_input_event_kind =
-  | "model_request"
-  | "model_response"
-  | "tool_call"
-  | "tool_result";
+export type ai_input_event_kind = "model_request" | "model_response";
 
 export type log_ai_input_params = {
   component: string;
@@ -63,18 +59,4 @@ export function serialize_messages_for_log(
       .map((part) => part.text)
       .join(""),
   }));
-}
-
-/**
- * @param result - Return value from a chat dataset tool
- * @returns Summary safe for audit storage (no full row payloads)
- */
-export function summarize_tool_result_for_log(
-  result: { ok: boolean; rows?: unknown[]; error?: string },
-): Record<string, unknown> {
-  if (!result.ok) {
-    return { ok: false, error: result.error ?? "unknown" };
-  }
-
-  return { ok: true, row_count: result.rows?.length ?? 0 };
 }

@@ -11,7 +11,7 @@ Mirrors Golden Analytics’ discover flow so the POC feels like the real product
 - Quick insights, key questions, and viz suggestions are **mock files** (`lib/mock/discover_*.ts`), fed from curated analysis where noted
 - Dataset stats come from a cached status API (`localStorage`); Refresh hits the API manually
 - Cart state is React context only — lost on refresh
-- Question suggest/refine uses a stub until LLM/RAG is wired
+- Question suggest/refine uses the LLM with curated dataset context (no tools or RAG)
 - No “chat with your data” on this tab
 
 ## Route
