@@ -31,3 +31,4 @@ Mirrors Golden Analytics’ discover flow so the POC feels like the real product
 - `components/workspace/investigation_cart_provider.tsx`
 - `lib/datasets/vendor_payments_status_cache.ts`
 - `lib/types/discover.ts`
+
