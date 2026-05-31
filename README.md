@@ -1,44 +1,104 @@
 # GOLDIE
 
-Golden Analytics brother from another mother.
+> Golden Analytics brother from another mother — **Canva for data.**
 
-Canva for data — an AI-native BI POC. Pick a template, connect data, explore questions, chat with context, and view theme-linked charts.
+**Live demo:** [project-goldie-analytics.vercel.app](https://project-goldie-analytics.vercel.app/)
 
-Stack: **Next.js** (App Router) · **Supabase** · **Vercel AI Gateway** · **Vercel**
+An AI-native BI POC. Pick a template, connect data, explore questions, chat with context, and view theme-linked charts.
 
-## The problem
+| | |
+|---|---|
+| **Stack** | Next.js · Supabase · Vercel AI Gateway · Vercel |
+| **Flow** | Templates → Database → Discover → Communicate |
 
-Data is everywhere, but for most people it is still trapped behind a technical wall. I focused on three pains I found in user research (Reddit, articles, Gemini deep research) that even polished BI demos do not fully solve:
+---
 
-1. **Confused onboarding** — users face a blank screen and do not know where to start.
-2. **Lost in the numbers** — they drift through rows and dead ends without a clear thread.
-3. **Emailing ping pong** — insights live in screenshots and inbox threads, not in one shared place.
+## 🎯 The problem
 
-**Who:** non-technical users first (e.g. a college student writing a capstone on WA State spending), with data analysts as a secondary persona.
+Data is everywhere, but for most people it is still trapped behind a technical wall.
 
-**Why this direction:** I mirrored Golden Analytics’ notebook flow (Database → Discover → Communicate) to compare feature-for-feature, but pushed harder on easy entry — templates marketplace (Canva/Kaggle-style inspiration), quick insights, and an **investigation cart** to track questions by theme before building charts. I skipped Prep and Analyze for the POC; those are high-complexity write-access problems better validated separately. I also did not try to out-feature Looker or Tableau on depth; the bet is guided exploration for people who are not analysts.
+Three pains from user research (Reddit, articles, Gemini deep research) that polished BI demos often miss:
 
-## Tech & architecture
+| Pain | What happens |
+|------|----------------|
+| 😵 **Confused onboarding** | Blank screen — users do not know where to start |
+| 🔢 **Lost in the numbers** | Drift through rows and dead ends with no clear thread |
+| 📧 **Emailing ping pong** | Insights stuck in screenshots and inbox threads |
 
-**What I built:** a Next.js monolith on Vercel with serverless API routes. Washington vendor payments (FY 2022–2023) live in Supabase Postgres. Modules: home + template marketplace, Database connect, Discover (insights + investigation cart), Communicate (chat + static dashboard + share UI mock). LLM calls go through Vercel AI Gateway (Gemini) with static dataset context; all inputs/outputs append to a Supabase audit log.
+**Who I built for:** non-technical users first (e.g. a college student writing a capstone on WA State spending). Data analysts second.
 
-**How it works:** user picks a template or types a goal → connects sample data → browses mocked insights and tracks questions in the cart → chats and views charts tied to a theme on Communicate. Charts are hand-rolled SVG from curated TypeScript analysis, not live SQL. Question refine/suggest in Discover uses the LLM; most insights and story suggestions are pre-queried mocks.
+**Why this direction (not the others):**
 
-**Explicitly deferred:** Prep/Analyze tabs, auth, cart/notebook persistence, real template API, multi-agent Discover, vector DB/RAG, live chart queries, collaboration backend, admin UI for audit logs.
+- Mirrored Golden Analytics' notebook flow to compare feature-for-feature
+- Pushed harder on easy entry — templates marketplace, quick insights, **investigation cart**
+- Skipped **Prep / Analyze** — write-access + transform at scale is a separate product bet
+- Did not chase Looker / Tableau depth — bet is guided exploration for non-analysts
 
-**Production changes:** auth + multi-tenant storage, persist investigation cart, wire charts to read-only SQL with guardrails, one simple RAG agent before scaling agents, template marketplace API, real sharing/comments, eval + retention on audit logs.
+---
 
-## AI usage log
+## 🏗️ Tech & architecture
 
-| # | What I asked | What it gave me | Kept / changed / rejected |
-|---|--------------|-----------------|---------------------------|
-| 1 | Build a Golden Analytics–style UI from the demo | One ~1,500-line `example.tsx` with every tab in a single file (camelCase, hard to extend) | **Rejected.** Deleted the file. **Kept** the layout idea. Rebuilt module-by-module with Cursor rules (snake_case, `components/`, `lib/`, phased commits). |
-| 2 | Design the Supabase schema for the vendor dataset | SQL schema file — then ran the script without asking | **Rejected** the auto-run. Reviewed SQL myself. **Updated** collaboration rules: no DB/deploy commands unless I explicitly approve. |
-| 3 | Wire Discover with AI summaries and Communicate charts | Full multi-agent pipeline + chart library (Recharts/Tremor) setup | **Changed scope.** **Kept** mocks from manual SQL queries for insights/charts in the POC. **Kept** a single LLM wrapper for chat + question-assist only. Hand-rolled SVG charts. Deferred agents/RAG until user validation. |
+### What I built
 
-**How I work with AI:** Cursor rule files (coding style, docs, architecture, collaboration), spec-driven pairing (requirements → architecture → implement), split tasks to keep context under ~70%, and code review on every AI diff.
+- **Next.js monolith** on Vercel — App Router + serverless API routes
+- **Supabase Postgres** — WA vendor payments (FY 2022–2023) + LLM audit log
+- **Vercel AI Gateway (Gemini)** — chat + question-assist with static dataset context
+- **Hand-rolled SVG charts** — curated TypeScript analysis, not live SQL
 
-## Quick start
+### Modules
+
+| Module | Route | What it does |
+|--------|-------|--------------|
+| 📋 Templates | `/`, `/templates` | Home, marketplace, start a notebook |
+| 🗄️ Database | `/workspace/database` | Connect Washington vendor payments sample |
+| 🔍 Discover | `/workspace/discover` | Insights, questions, investigation cart |
+| 💬 Communicate | `/workspace/communicate` | Chat + theme-linked dashboard charts |
+| 📝 Audit | (backend) | Append-only LLM input log |
+
+Module docs: [template](docs/template_module.md) · [database](docs/sample_data_reference.md) · [discover](docs/discover_module.md) · [dashboard](docs/dashboard_module.md) · [audit](docs/audit_module.md)
+
+### How it works
+
+```
+Pick template or type a goal
+  → Connect sample data
+  → Browse insights, track questions in cart
+  → Chat + view charts tied to a theme
+```
+
+- Discover question refine/suggest uses the LLM; most insights and stories are pre-queried mocks
+- Charts read from curated analysis files, not live queries
+
+### Deferred (POC)
+
+- Prep / Analyze tabs
+- Auth, cart persistence, real template API
+- Multi-agent Discover, vector DB / RAG
+- Live chart queries, collaboration backend, audit admin UI
+
+### Production would add
+
+- Auth + multi-tenant storage, persist investigation cart
+- Read-only SQL for charts with guardrails
+- One simple RAG agent before scaling agents
+- Template marketplace API, real sharing / comments
+- Eval + retention on audit logs
+
+---
+
+## 🤖 AI usage log
+
+| # | What I asked | What it gave me | Outcome |
+|---|--------------|-----------------|---------|
+| 1 | Build a Golden Analytics–style UI | ~1,500-line `example.tsx` — every tab in one file | ❌ **Rejected** — deleted it. ✅ Rebuilt module-by-module with Cursor rules |
+| 2 | Design Supabase schema for vendor data | SQL file + **auto-ran the script** | ❌ **Rejected** auto-run. ✅ Reviewed SQL myself, tightened collaboration rules |
+| 3 | Wire Discover AI + Communicate charts | Full multi-agent pipeline + Recharts setup | 🔄 **Scoped down** — mocks + single LLM wrapper for chat; deferred RAG |
+
+**How I work with AI:** Cursor rule files · spec-driven pairing (requirements → architecture → code) · split tasks (~70% context max) · review every diff
+
+---
+
+## 🚀 Quick start
 
 ```bash
 cp .env.example .env.local   # fill in Supabase + AI Gateway keys
@@ -53,22 +113,10 @@ npm run db:schema
 npm run import:vendor-payments
 ```
 
-See `[.env.example](.env.example)` for required variables.
+See [`.env.example`](.env.example) for required variables.
 
-## Modules
+---
 
+## 📌 POC notes
 
-| Area                                                     | Route(s)                 | Doc                                                            |
-| -------------------------------------------------------- | ------------------------ | -------------------------------------------------------------- |
-| **Templates** — home, marketplace, start a notebook      | `/`, `/templates`        | [docs/template_module.md](docs/template_module.md)             |
-| **Database** — connect Washington vendor payments sample | `/workspace/database`    | [docs/sample_data_reference.md](docs/sample_data_reference.md) |
-| **Discover** — insights, questions, investigation cart   | `/workspace/discover`    | [docs/discover_module.md](docs/discover_module.md)             |
-| **Communicate** — chat + theme-linked dashboard charts   | `/workspace/communicate` | [docs/dashboard_module.md](docs/dashboard_module.md)           |
-| **Audit** — append-only LLM input log                    | (backend)                | [docs/audit_module.md](docs/audit_module.md)                   |
-
-
-Typical flow: **Templates** → **Database** → **Discover** (track themes) → **Communicate** (chat + charts).
-
-## POC notes
-
-Most UI content is mocked or curated in TypeScript — not live SQL or a real template API. Cart and collaboration state are not persisted. Details and shortcuts per module are in the docs above.
+Most UI is mocked or curated in TypeScript — not live SQL or a real template API. Cart and collaboration state are not persisted. Per-module shortcuts are in the docs linked above.
